@@ -1,0 +1,264 @@
+2025-12-16 13:28:18,693:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:29:20,873:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:30:08,227:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:31:12,217:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:31:22,727:WARNING:f:\Grok M opt\app.py:99: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 13:33:21,467:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:33:31,692:WARNING:f:\Grok M opt\app.py:106: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 13:36:36,830:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:36:47,251:WARNING:f:\Grok M opt\app.py:106: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 13:41:50,869:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:41:56,506:WARNING:f:\Grok M opt\app.py:106: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 13:44:11,906:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:44:17,356:WARNING:f:\Grok M opt\app.py:106: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 13:48:18,539:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:48:24,867:WARNING:f:\Grok M opt\app.py:110: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 13:51:30,539:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 13:51:36,472:WARNING:f:\Grok M opt\app.py:152: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 14:50:50,295:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 14:51:51,140:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 14:51:59,690:WARNING:F:\Grok M opt\app.py:152: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 14:57:14,746:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 14:57:20,749:WARNING:F:\Grok M opt\app.py:163: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 15:06:16,745:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 15:06:17,376:WARNING:<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+2025-12-16 15:06:17,376:WARNING:<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+2025-12-16 15:06:17,395:WARNING:<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+2025-12-16 15:07:15,076:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 15:07:21,131:WARNING:F:\Grok M opt\app.py:211: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 15:14:51,585:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 15:14:56,974:WARNING:F:\Grok M opt\app.py:211: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 15:21:52,149:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 15:21:57,600:WARNING:F:\Grok M opt\app.py:211: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 18:57:40,945:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 18:57:47,451:WARNING:F:\Grok M opt\app.py:211: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 18:59:13,772:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 18:59:19,150:WARNING:F:\Grok M opt\app.py:211: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 19:01:09,703:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 19:01:14,719:WARNING:F:\Grok M opt\app.py:211: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 20:09:28,856:WARNING:f:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 20:09:55,151:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 20:10:02,228:WARNING:F:\Grok M opt\app.py:215: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 20:12:27,766:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 20:12:32,642:WARNING:F:\Grok M opt\app.py:215: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-16 20:20:36,077:WARNING:F:\Grok M opt\models.py:14: RuntimeWarning: PyCaret not available or incompatible with this Python version. Some features will be disabled.
+  warnings.warn("PyCaret not available or incompatible with this Python version. Some features will be disabled.", RuntimeWarning)
+
+2025-12-16 20:20:41,395:WARNING:F:\Grok M opt\app.py:227: UserWarning: ingest_trends failed: The request failed: Google returned a response with code 429
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-23 11:41:21,115:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:41:21,115:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:41:21,115:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:41:21,115:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:41:42,514:WARNING:D:\Market optimizer\app.py:227: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-23 11:47:49,873:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:47:49,892:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:47:49,894:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:47:49,896:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:48:35,993:WARNING:D:\Market optimizer\app.py:228: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-23 11:53:26,654:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:53:26,654:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:53:26,654:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:53:26,655:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 11:53:31,241:WARNING:D:\Market optimizer\app.py:305: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-23 12:09:39,158:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:09:39,159:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:09:39,159:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:09:39,159:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:10:19,020:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:10:19,021:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:10:19,021:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:10:19,021:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:10:23,296:WARNING:D:\Market optimizer\app.py:331: UserWarning: ingest_trends failed: table trends has no column named clothing
+  warnings.warn(f"ingest_trends failed: {e}")
+
+2025-12-23 12:18:11,048:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:18:11,050:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:18:11,050:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:18:11,050:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:38:47,863:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:38:47,867:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:38:47,867:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:38:47,867:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:44:09,340:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:44:09,343:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:44:09,343:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:44:09,343:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:48:18,468:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:48:18,471:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:48:18,471:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 12:48:18,471:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:35:27,089:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:35:27,089:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:35:27,089:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:35:27,089:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:44:23,732:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:44:23,732:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:44:23,732:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 14:44:23,732:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:03:17,444:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:03:17,451:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:03:17,451:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:03:17,452:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:12:51,051:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:12:51,060:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:12:51,060:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 15:12:51,060:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 22:01:52,292:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 22:01:52,311:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 22:01:52,311:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-23 22:01:52,311:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-25 11:45:35,540:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-25 11:45:35,545:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-25 11:45:35,545:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-12-25 11:45:35,545:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
