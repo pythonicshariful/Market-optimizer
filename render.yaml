@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: market-optimizer
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:flask_app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SKIP_INGEST
+        value: "1"
+      - key: DEBUG
+        value: "False"
