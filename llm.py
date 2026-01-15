@@ -3,57 +3,57 @@ import os
 import json
 import requests
 
+# Import configuration
+try:
+    from config import get_gemini_api_key, GEMINI_MODEL, OPENAI_API_KEY, OPENAI_MODEL
+    # Set environment variables from config if not already set
+    if not os.environ.get('GEMINI_API_KEY'):
+        key = get_gemini_api_key()
+        if key:
+            os.environ['GEMINI_API_KEY'] = key
+    if not os.environ.get('GEMINI_MODEL'):
+        os.environ['GEMINI_MODEL'] = GEMINI_MODEL
+    if not os.environ.get('OPENAI_API_KEY') and OPENAI_API_KEY:
+        os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+    if not os.environ.get('OPENAI_MODEL'):
+        os.environ['OPENAI_MODEL'] = OPENAI_MODEL
+except ImportError:
+    # Fallback: Load from .env file manually
+    def _load_local_env(path=None):
+        # Search for a .env file in this directory and up to 4 parents
+        start = os.path.abspath(os.path.dirname(__file__))
+        candidates = []
+        cur = start
+        for _ in range(5):
+            candidates.append(os.path.join(cur, '.env'))
+            parent = os.path.dirname(cur)
+            if parent == cur:
+                break
+            cur = parent
+        if path:
+            candidates.insert(0, os.path.abspath(path))
 
-# Robust .env loading: prefer python-dotenv, otherwise search parent dirs for .env
-def _load_local_env(path=None):
-    # 1) If python-dotenv available, use it (handles many edge cases)
-    try:
-        from dotenv import load_dotenv, find_dotenv
-        # find_dotenv will search parent directories
-        dotenv_path = find_dotenv(filename=path or '.env', raise_error_if_not_found=False)
-        if dotenv_path:
-            load_dotenv(dotenv_path)
-            return
-    except Exception:
-        pass
-
-    # 2) Fallback: search for a .env file in this directory and up to 4 parents
-    start = os.path.abspath(os.path.dirname(__file__))
-    candidates = []
-    cur = start
-    for _ in range(5):
-        candidates.append(os.path.join(cur, '.env'))
-        parent = os.path.dirname(cur)
-        if parent == cur:
-            break
-        cur = parent
-    # If a specific path was provided, prioritize it
-    if path:
-        candidates.insert(0, os.path.abspath(path))
-
-    for p in candidates:
-        if not os.path.exists(p):
-            continue
-        try:
-            with open(p, 'r', encoding='utf-8') as fh:
-                for raw in fh:
-                    line = raw.strip()
-                    if not line or line.startswith('#'):
-                        continue
-                    if '=' not in line:
-                        continue
-                    k, v = line.split('=', 1)
-                    k = k.strip()
-                    v = v.strip().strip('"').strip("'")
-                    if k and k not in os.environ:
-                        os.environ[k] = v
-            return
-        except Exception:
-            continue
-
-
-# Ensure keys from project .env are loaded when this module is imported
-_load_local_env()
+        for p in candidates:
+            if not os.path.exists(p):
+                continue
+            try:
+                with open(p, 'r', encoding='utf-8') as fh:
+                    for raw in fh:
+                        line = raw.strip()
+                        if not line or line.startswith('#'):
+                            continue
+                        if '=' not in line:
+                            continue
+                        k, v = line.split('=', 1)
+                        k = k.strip()
+                        v = v.strip().strip('"').strip("'")
+                        if k and k not in os.environ:
+                            os.environ[k] = v
+                return
+            except Exception:
+                continue
+    
+    _load_local_env()
 
 
 def load_llm():
@@ -70,6 +70,7 @@ def load_llm():
         return pipeline('text-generation', model=model, tokenizer=tokenizer)
     except Exception:
         return None
+
 
 
 def _generate_with_openai(prompt, model_name=None):

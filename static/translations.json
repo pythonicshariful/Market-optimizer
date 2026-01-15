@@ -1,0 +1,145 @@
+{
+  "en": {
+    "app_title": "AI E-Commerce Engine",
+    "app_subtitle": "One-click Insights • No setup",
+    "dashboard_title": "Smart Retail Dashboard",
+    "dashboard_subtitle": "Push a button — get forecasts, optimized prices, recommendations and network insights.",
+    
+    "nav_dashboard": "Dashboard",
+    "nav_products": "Products",
+    "nav_analytics": "Analytics",
+    "nav_chat": "AI Chat",
+    "nav_settings": "Settings",
+    
+    "product_placeholder": "Product (e.g., clothing)",
+    
+    "btn_forecast": "Forecast Demand",
+    "btn_price": "Optimize Price",
+    "btn_recommend": "Recommend Products",
+    "btn_graph": "Graph Insights",
+    "btn_social": "Social Buzz",
+    "btn_compare": "Compare Products",
+    "btn_export_pdf": "Export PDF",
+    "btn_export_excel": "Export Excel",
+    "btn_ask": "Ask",
+    
+    "card_forecast": "Forecast (next 30 days)",
+    "card_price": "Price Optimization",
+    "card_recommendations": "Recommendations",
+    "card_chat": "ROI Copilot",
+    "card_graph": "Product Network",
+    "card_social": "Social Sentiment",
+    "card_comparison": "Product Comparison",
+    "card_analytics": "Analytics Dashboard",
+    
+    "chat_placeholder": "Ask a question (e.g., Should I optimize price?)",
+    "chat_top_placeholder": "Ask the ROI Copilot...",
+    
+    "price_current": "Current",
+    "price_optimized": "Optimized",
+    
+    "toast_ready": "Ready — connected to API",
+    "toast_fetching_forecast": "Fetching forecast...",
+    "toast_optimizing_price": "Optimizing price...",
+    "toast_fetching_recommendations": "Fetching recommendations...",
+    "toast_loading_graph": "Loading graph...",
+    "toast_loading_social": "Loading social sentiment...",
+    "toast_asking_copilot": "Asking Copilot...",
+    "toast_type_question": "Type a question first",
+    "toast_forecast_failed": "Forecast failed",
+    "toast_price_failed": "Price optimization failed",
+    "toast_recommend_failed": "Recommendations failed",
+    "toast_graph_failed": "Graph loading failed",
+    "toast_social_failed": "Social sentiment failed",
+    "toast_chat_failed": "Chat failed",
+    
+    "footer_text": "Built for demos — connected to the local Flask API",
+    
+    "settings_language": "Language",
+    "settings_theme": "Theme",
+    "settings_theme_light": "Light",
+    "settings_theme_dark": "Dark",
+    "settings_theme_auto": "Auto",
+    
+    "followup_explain_price": "Explain optimized price",
+    "followup_forecast_details": "Show forecast details",
+    "followup_recommend_restock": "Recommend restock",
+    "followup_improve_roi": "How to improve ROI",
+    
+    "no_data": "No data available",
+    "loading": "Loading...",
+    "error": "Error"
+  },
+  
+  "bn": {
+    "app_title": "এআই ই-কমার্স ইঞ্জিন",
+    "app_subtitle": "এক-ক্লিক তথ্য • সেটআপ প্রয়োজন নেই",
+    "dashboard_title": "স্মার্ট খুচরা ড্যাশবোর্ড",
+    "dashboard_subtitle": "একটি বাটন চাপুন — পূর্বাভাস, অপটিমাইজড দাম, সুপারিশ এবং নেটওয়ার্ক তথ্য পান।",
+    
+    "nav_dashboard": "ড্যাশবোর্ড",
+    "nav_products": "পণ্য",
+    "nav_analytics": "বিশ্লেষণ",
+    "nav_chat": "এআই চ্যাট",
+    "nav_settings": "সেটিংস",
+    
+    "product_placeholder": "পণ্য (যেমন, clothing)",
+    
+    "btn_forecast": "চাহিদা পূর্বাভাস",
+    "btn_price": "দাম অপটিমাইজ করুন",
+    "btn_recommend": "পণ্য সুপারিশ",
+    "btn_graph": "গ্রাফ তথ্য",
+    "btn_social": "সামাজিক অনুভূতি",
+    "btn_compare": "পণ্য তুলনা",
+    "btn_export_pdf": "পিডিএফ রপ্তানি",
+    "btn_export_excel": "এক্সেল রপ্তানি",
+    "btn_ask": "জিজ্ঞাসা করুন",
+    
+    "card_forecast": "পূর্বাভাস (পরবর্তী ৩০ দিন)",
+    "card_price": "দাম অপটিমাইজেশন",
+    "card_recommendations": "সুপারিশসমূহ",
+    "card_chat": "ROI কপাইলট",
+    "card_graph": "পণ্য নেটওয়ার্ক",
+    "card_social": "সামাজিক অনুভূতি",
+    "card_comparison": "পণ্য তুলনা",
+    "card_analytics": "বিশ্লেষণ ড্যাশবোর্ড",
+    
+    "chat_placeholder": "একটি প্রশ্ন জিজ্ঞাসা করুন (যেমন, আমার দাম অপটিমাইজ করা উচিত?)",
+    "chat_top_placeholder": "ROI কপাইলটকে জিজ্ঞাসা করুন...",
+    
+    "price_current": "বর্তমান",
+    "price_optimized": "অপটিমাইজড",
+    
+    "toast_ready": "প্রস্তুত — API-এর সাথে সংযুক্ত",
+    "toast_fetching_forecast": "পূর্বাভাস আনা হচ্ছে...",
+    "toast_optimizing_price": "দাম অপটিমাইজ করা হচ্ছে...",
+    "toast_fetching_recommendations": "সুপারিশ আনা হচ্ছে...",
+    "toast_loading_graph": "গ্রাফ লোড হচ্ছে...",
+    "toast_loading_social": "সামাজিক অনুভূতি লোড হচ্ছে...",
+    "toast_asking_copilot": "কপাইলটকে জিজ্ঞাসা করা হচ্ছে...",
+    "toast_type_question": "প্রথমে একটি প্রশ্ন লিখুন",
+    "toast_forecast_failed": "পূর্বাভাস ব্যর্থ হয়েছে",
+    "toast_price_failed": "দাম অপটিমাইজেশন ব্যর্থ হয়েছে",
+    "toast_recommend_failed": "সুপারিশ ব্যর্থ হয়েছে",
+    "toast_graph_failed": "গ্রাফ লোড ব্যর্থ হয়েছে",
+    "toast_social_failed": "সামাজিক অনুভূতি ব্যর্থ হয়েছে",
+    "toast_chat_failed": "চ্যাট ব্যর্থ হয়েছে",
+    
+    "footer_text": "ডেমোর জন্য তৈরি — স্থানীয় Flask API-এর সাথে সংযুক্ত",
+    
+    "settings_language": "ভাষা",
+    "settings_theme": "থিম",
+    "settings_theme_light": "লাইট",
+    "settings_theme_dark": "ডার্ক",
+    "settings_theme_auto": "অটো",
+    
+    "followup_explain_price": "অপটিমাইজড দাম ব্যাখ্যা করুন",
+    "followup_forecast_details": "পূর্বাভাসের বিস্তারিত দেখান",
+    "followup_recommend_restock": "পুনঃস্টক সুপারিশ করুন",
+    "followup_improve_roi": "কীভাবে ROI উন্নত করা যায়",
+    
+    "no_data": "কোনো ডেটা নেই",
+    "loading": "লোড হচ্ছে...",
+    "error": "ত্রুটি"
+  }
+}

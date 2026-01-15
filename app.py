@@ -28,7 +28,8 @@ _load_local_env()
 from flask import Flask, request, jsonify
 import threading
 from database import init_db, load_data
-# Defer importing heavy modules (data_ingestion, models) until needed to reduce startup memory
+from data_ingestion import ingest_trends, ingest_mock_transactions, ingest_social_buzz
+# Defer importing heavy modules (models) until needed to reduce startup memory
 
 from llm import load_llm, generate_insight, generate_insight_stream
 from flask import Response
@@ -222,14 +223,427 @@ def api_social_series():
     series = dfp.to_dict(orient='records') if dfp is not None and not dfp.empty else []
     return jsonify({'series': series})
 
+@flask_app.route('/api/export/excel', methods=['GET'])
+def api_export_excel():
+    """Export sales data to Excel format."""
+    try:
+        from export_utils import export_sales_excel
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        filepath = export_sales_excel(start_date, end_date)
+        from flask import send_file
+        return send_file(filepath, as_attachment=True, download_name=os.path.basename(filepath))
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/export/forecast', methods=['GET'])
+def api_export_forecast():
+    """Export forecast report."""
+    try:
+        from export_utils import generate_forecast_pdf
+        from models import forecast_demand
+        product = request.args.get('product', 'clothing')
+        forecast_data = forecast_demand(product)
+        filepath = generate_forecast_pdf(product, forecast_data)
+        from flask import send_file
+        return send_file(filepath, as_attachment=True, download_name=os.path.basename(filepath))
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/analytics/kpis', methods=['GET'])
+def api_analytics_kpis():
+    """Calculate comprehensive KPIs for dashboard analytics."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty:
+            return jsonify({'error': 'No transaction data available'}), 404
+        
+        # Ensure date column is datetime
+        df['date'] = pd.to_datetime(df['date'])
+        
+        # Calculate Total Revenue
+        df['total_amount'] = df['quantity'] * df['price']
+        total_revenue = float(df['total_amount'].sum())
+        
+        # Calculate growth rate (compare last 30 days vs previous 30 days)
+        today = pd.Timestamp.now()
+        last_30_days = df[df['date'] >= (today - pd.Timedelta(days=30))]
+        prev_30_days = df[(df['date'] >= (today - pd.Timedelta(days=60))) & (df['date'] < (today - pd.Timedelta(days=30)))]
+        
+        last_30_revenue = float(last_30_days['total_amount'].sum()) if not last_30_days.empty else 0
+        prev_30_revenue = float(prev_30_days['total_amount'].sum()) if not prev_30_days.empty else 1
+        growth_rate = ((last_30_revenue - prev_30_revenue) / prev_30_revenue * 100) if prev_30_revenue > 0 else 0
+        
+        # Top 5 Products by Revenue
+        product_revenue = df.groupby('product')['total_amount'].sum().sort_values(ascending=False)
+        top_products = [{'name': k, 'revenue': float(v)} for k, v in product_revenue.head(5).items()]
+        
+        # Total Orders
+        total_orders = len(df)
+        
+        # Average Order Value
+        avg_order_value = float(df.groupby('transaction_id')['total_amount'].sum().mean()) if 'transaction_id' in df.columns else float(df['total_amount'].mean())
+        
+        # Unique Customers (if user_id exists)
+        unique_customers = int(df['user_id'].nunique()) if 'user_id' in df.columns else 0
+        
+        # Today's Revenue
+        today_revenue = float(df[df['date'] == today.date()]['total_amount'].sum()) if not df[df['date'] == today.date()].empty else 0
+        
+        # This Week's Revenue
+        week_start = today - pd.Timedelta(days=today.dayofweek)
+        week_revenue = float(df[df['date'] >= week_start.date()]['total_amount'].sum())
+        
+        # This Month's Revenue
+        month_start = today.replace(day=1)
+        month_revenue = float(df[df['date'] >= month_start.date()]['total_amount'].sum())
+        
+        # Product with highest growth
+        last_month_df = df[df['date'] >= (today - pd.Timedelta(days=30))]
+        prev_month_df = df[(df['date'] >= (today - pd.Timedelta(days=60))) & (df['date'] < (today - pd.Timedelta(days=30)))]
+        
+        growth_by_product = {}
+        for product in df['product'].unique():
+            last = last_month_df[last_month_df['product'] == product]['total_amount'].sum()
+            prev = prev_month_df[prev_month_df['product'] == product]['total_amount'].sum()
+            if prev > 0:
+                growth_by_product[product] = ((last - prev) / prev * 100)
+        
+        trending_product = max(growth_by_product.items(), key=lambda x: x[1]) if growth_by_product else ('N/A', 0)
+        
+        return jsonify({
+            'total_revenue': round(total_revenue, 2),
+            'growth_rate': round(growth_rate, 2),
+            'total_orders': total_orders,
+            'avg_order_value': round(avg_order_value, 2),
+            'unique_customers': unique_customers,
+            'today_revenue': round(today_revenue, 2),
+            'week_revenue': round(week_revenue, 2),
+            'month_revenue': round(month_revenue, 2),
+            'top_products': top_products,
+            'trending_product': {
+                'name': trending_product[0],
+                'growth': round(trending_product[1], 2)
+            }
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@flask_app.route('/api/stock/alert', methods=['GET'])
+def api_stock_alert():
+    """Analyze inventory and predict stock-outs."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty:
+            return jsonify({'error': 'No data'}), 404
+        
+        df['date'] = pd.to_datetime(df['date'])
+        today = pd.Timestamp.now()
+        last_30_days = df[df['date'] >= (today - pd.Timedelta(days=30))]
+        
+        alerts = []
+        for product in df['product'].unique():
+            product_sales = last_30_days[last_30_days['product'] == product]
+            if len(product_sales) == 0:
+                continue
+            
+            # Calculate daily average sales
+            daily_avg = product_sales.groupby('date')['quantity'].sum().mean()
+            total_sold_30d = product_sales['quantity'].sum()
+            
+            # Assume 100 units current stock (can be made dynamic)
+            current_stock = 100
+            days_until_stockout = int(current_stock / daily_avg) if daily_avg > 0 else 999
+            reorder_point = int(daily_avg * 7)  # 1 week safety stock
+            
+            status = 'ok'
+            if days_until_stockout < 7:
+                status = 'critical'
+            elif days_until_stockout < 14:
+                status = 'warning'
+            
+            alerts.append({
+                'product': product,
+                'current_stock': current_stock,
+                'daily_avg_sales': round(daily_avg, 2),
+                'days_until_stockout': days_until_stockout,
+                'reorder_point': reorder_point,
+                'status': status,
+                'recommendation': f"অর্ডার দিন {reorder_point} ইউনিট" if status != 'ok' else 'স্টক ভালো আছে'
+            })
+        
+        return jsonify({'alerts': sorted(alerts, key=lambda x: x['days_until_stockout'])})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/trends/analysis', methods=['GET'])
+def api_trends_analysis():
+    """Analyze sales trends by day and time."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty:
+            return jsonify({'error': 'No data'}), 404
+        
+        df['date'] = pd.to_datetime(df['date'])
+        df['day_of_week'] = df['date'].dt.day_name()
+        df['total_amount'] = df['quantity'] * df['price']
+        
+        # Best selling days
+        day_sales = df.groupby('day_of_week')['total_amount'].sum().to_dict()
+        best_day = max(day_sales.items(), key=lambda x: x[1])
+        
+        # Weekly pattern
+        days_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        weekly_pattern = [{'day': day, 'revenue': float(day_sales.get(day, 0))} for day in days_order]
+        
+        # Month-over-month growth
+        df['month'] = df['date'].dt.to_period('M')
+        monthly_revenue = df.groupby('month')['total_amount'].sum()
+        if len(monthly_revenue) >= 2:
+            latest_month = monthly_revenue.iloc[-1]
+            prev_month = monthly_revenue.iloc[-2]
+            mom_growth = ((latest_month - prev_month) / prev_month * 100) if prev_month > 0 else 0
+        else:
+            mom_growth = 0
+        
+        return jsonify({
+            'best_day': {'name': best_day[0], 'revenue': float(best_day[1])},
+            'weekly_pattern': weekly_pattern,
+            'mom_growth': round(mom_growth, 2),
+            'recommendation': f"{best_day[0]} তে বেশি প্রচার চালান - সবচেয়ে বেশি বিক্রয় হয়!"
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/customer/insights', methods=['GET'])
+def api_customer_insights():
+    """Customer RFM analysis and lifetime value."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty or 'user_id' not in df.columns:
+            return jsonify({'error': 'No customer data'}), 404
+        
+        df['date'] = pd.to_datetime(df['date'])
+        df['total_amount'] = df['quantity'] * df['price']
+        today = pd.Timestamp.now()
+        
+        # RFM Analysis
+        rfm = df.groupby('user_id').agg({
+            'date': lambda x: (today - x.max()).days,  # Recency
+            'transaction_id': 'count',  # Frequency
+            'total_amount': 'sum'  # Monetary
+        }).rename(columns={'date': 'recency', 'transaction_id': 'frequency', 'total_amount': 'monetary'})
+        
+        # Top 5 customers by value
+        top_customers = rfm.nlargest(5, 'monetary')
+        top_list = [{'customer_id': int(idx), 'total_spent': float(row['monetary']), 'orders': int(row['frequency'])} 
+                    for idx, row in top_customers.iterrows()]
+        
+        # Average customer lifetime value
+        avg_ltv = float(rfm['monetary'].mean())
+        
+        # Churn risk (customers who haven't bought in 60+ days)
+        at_risk = len(rfm[rfm['recency'] > 60])
+        
+        return jsonify({
+            'total_customers': len(rfm),
+            'top_customers': top_list,
+            'avg_ltv': round(avg_ltv, 2),
+            'at_risk_customers': at_risk,
+            'recommendation': f"{at_risk} জন ক্রেতা ঝুঁকিতে আছে - তাদের জন্য বিশেষ অফার দিন!"
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/profit/analysis', methods=['GET'])
+def api_profit_analysis():
+    """Calculate profit margins for products."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty:
+            return jsonify({'error': 'No data'}), 404
+        
+        # Assume 30% cost (can be made dynamic)
+        cost_margin = 0.70
+        
+        df['total_amount'] = df['quantity'] * df['price']
+        df['cost'] = df['total_amount'] * cost_margin
+        df['profit'] = df['total_amount'] - df['cost']
+        
+        # Profit by product
+        product_profit = df.groupby('product').agg({
+            'total_amount': 'sum',
+            'cost': 'sum',
+            'profit': 'sum',
+            'quantity': 'sum'
+        }).reset_index()
+        
+        product_profit['profit_margin'] = (product_profit['profit'] / product_profit['total_amount'] * 100)
+        
+        # Most profitable products
+        top_profit = product_profit.nlargest(5, 'profit')
+        profit_list = [{'product': row['product'], 
+                        'revenue': float(row['total_amount']), 
+                        'profit': float(row['profit']),
+                        'margin': round(row['profit_margin'], 2)}
+                       for _, row in top_profit.iterrows()]
+        
+        total_profit = float(df['profit'].sum())
+        total_margin = (total_profit / df['total_amount'].sum() * 100)
+        
+        best_margin_product = product_profit.loc[product_profit['profit_margin'].idxmax()]
+        
+        return jsonify({
+            'total_profit': round(total_profit, 2),
+            'profit_margin': round(total_margin, 2),
+            'top_profitable': profit_list,
+            'best_margin_product': {
+                'name': best_margin_product['product'],
+                'margin': round(best_margin_product['profit_margin'], 2)
+            },
+            'recommendation': f"{best_margin_product['product']} সবচেয়ে লাভজনক - এটি বেশি প্রচার করুন!"
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/seasonal/predictor', methods=['GET'])
+def api_seasonal_predictor():
+    """Detect seasonal patterns for Bangladesh market."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty:
+            return jsonify({'error': 'No data'}), 404
+        
+        df['date'] = pd.to_datetime(df['date'])
+        df['month'] = df['date'].dt.month
+        df['total_amount'] = df['quantity'] * df['price']
+        
+        # Month-wise revenue
+        monthly = df.groupby('month')['total_amount'].sum().to_dict()
+        
+        # Identify peak months
+        peak_month = max(monthly.items(), key=lambda x: x[1])
+        
+        # Bangladesh-specific seasons
+        month_names = {1: 'জানুয়ারি', 2: 'ফেব্রুয়ারি', 3: 'মার্চ (রমজান)', 4: 'এপ্রিল (ঈদ)', 
+                      5: 'মে', 6: 'জুন', 7: 'জুলাই', 8: 'আগস্ট', 9: 'সেপ্টেম্বর', 
+                      10: 'অক্টোবর', 11: 'নভেম্বর (শীত)', 12: 'ডিসেম্বর (শীত)'}
+        
+        # Ramadan/Eid products (March-May surge)
+        eid_months = df[df['month'].isin([3, 4, 5])]
+        eid_top_products = eid_months.groupby('product')['total_amount'].sum().nlargest(3)
+        
+        # Winter products (Nov-Feb surge)
+        winter_months = df[df['month'].isin([11, 12, 1, 2])]
+        winter_top_products = winter_months.groupby('product')['total_amount'].sum().nlargest(3)
+        
+        # Current month prediction
+        current_month = pd.Timestamp.now().month
+        upcoming_season = ""
+        if current_month in [2, 3]:
+            upcoming_season = "রমজান আসছে - খাদ্য ও পোশাক স্টক বাড়ান"
+        elif current_month in [3, 4]:
+            upcoming_season = "ঈদ আসছে - পোশাক, প্রসাধনী, খেলনা স্টক বাড়ান"
+        elif current_month in [10, 11]:
+            upcoming_season = "শীত আসছে - ইলেকট্রনিক্স, পোশাক স্টক বাড়ান"
+        else:
+            upcoming_season = "স্বাভাবিক মৌসুম - নিয়মিত স্টক বজায় রাখুন"
+        
+        return jsonify({
+            'peak_month': {'month': peak_month[0], 'name': month_names.get(peak_month[0]), 'revenue': float(peak_month[1])},
+            'eid_top_products': [{'product': k, 'revenue': float(v)} for k, v in eid_top_products.items()],
+            'winter_top_products': [{'product': k, 'revenue': float(v)} for k, v in winter_top_products.items()],
+            'upcoming_season': upcoming_season,
+            'recommendation': upcoming_season
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/marketing/planner', methods=['GET'])
+def api_marketing_planner():
+    """Marketing campaign recommendations."""
+    try:
+        df = load_data('transactions')
+        if df is None or df.empty:
+            return jsonify({'error': 'No data'}), 404
+        
+        df['date'] = pd.to_datetime(df['date'])
+        df['day_of_week'] = df['date'].dt.dayofweek  # 0=Monday, 6=Sunday
+        df['total_amount'] = df['quantity'] * df['price']
+        
+        # Best campaign days (Friday-Saturday বেশি বিক্রয়)
+        day_performance = df.groupby('day_of_week')['total_amount'].mean()
+        best_campaign_day = day_performance.idxmax()
+        day_names = ['সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার', 'রবিবার']
+        
+        # Products that need promotion (low recent sales)
+        today = pd.Timestamp.now()
+        recent = df[df['date'] >= (today - pd.Timedelta(days=30))]
+        old = df[(df['date'] >= (today - pd.Timedelta(days=60))) & (df['date'] < (today - pd.Timedelta(days=30)))]
+        
+        recent_sales = recent.groupby('product')['total_amount'].sum()
+        old_sales = old.groupby('product')['total_amount'].sum()
+        
+        declining = []
+        for product in df['product'].unique():
+            r = recent_sales.get(product, 0)
+            o = old_sales.get(product, 1)
+            if r < o:
+                decline_pct = ((o - r) / o * 100) if o > 0 else 0
+                declining.append({'product': product, 'decline': round(decline_pct, 2)})
+        
+        declining = sorted(declining, key=lambda x: x['decline'], reverse=True)[:3]
+        
+        # Discount strategy
+        discount_candidates = [item['product'] for item in declining]
+        
+        return jsonify({
+            'best_campaign_day': day_names[best_campaign_day],
+            'declining_products': declining,
+            'discount_recommendations': discount_candidates,
+            'recommended_discount': '15-20%',
+            'recommendation': f"{day_names[best_campaign_day]} তে ক্যাম্পেইন চালান এবং {', '.join(discount_candidates[:2])} এ ডিসকাউন্ট দিন"
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@flask_app.route('/api/compare', methods=['GET'])
+def api_compare():
+    """Compare multiple products."""
+    try:
+        products_param = request.args.get('products', 'clothing,electronics')
+        products = [p.strip() for p in products_param.split(',')]
+        
+        df = load_data('transactions')
+        comparison = {}
+        
+        for product in products:
+            product_data = df[df['product'] == product]
+            if not product_data.empty:
+                comparison[product] = {
+                    'total_sales': int(product_data['quantity'].sum()),
+                    'avg_price': float(product_data['price'].mean()),
+                    'transaction_count': len(product_data),
+                    'avg_quantity': float(product_data['quantity'].mean())
+                }
+        
+        return jsonify({'comparison': comparison})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @flask_app.route('/api/chat', methods=['GET','POST'])
 def api_chat():
     prompt = None
+    lang = 'en'
     if request.method == 'POST':
         data = request.get_json(silent=True) or {}
         prompt = data.get('prompt')
+        lang = data.get('lang', 'en')
     if not prompt:
         prompt = request.args.get('prompt', '')
+        lang = request.args.get('lang', 'en')
+    
     # Optionally include dashboard context to ground answers
     product = request.args.get('product', None)
     include_ctx = request.args.get('include_context', 'true').lower() != 'false'
@@ -242,15 +656,18 @@ def api_chat():
 
     final_prompt = prompt
     if ctx:
-        final_prompt = f"{prompt}\n\nDashboard context:\n{ctx}\n\nPlease answer as a business advisor, referencing the dashboard values when relevant, and provide clear suggestions and next steps."
+        if lang == 'bn':
+            final_prompt = f"{prompt}\n\nড্যাশবোর্ড প্রসঙ্গ:\n{ctx}\n\nঅনুগ্রহ করে একজন ব্যবসা পরামর্শদাতা হিসেবে উত্তর দিন, প্রাসঙ্গিক হলে ড্যাশবোর্ডের মান উল্লেখ করুন এবং স্পষ্ট পরামর্শ ও পরবর্তী পদক্ষেপ প্রদান করুন। বাংলায় উত্তর দিন।"
+        else:
+            final_prompt = f"{prompt}\n\nDashboard context:\n{ctx}\n\nPlease answer as a business advisor, referencing the dashboard values when relevant, and provide clear suggestions and next steps."
 
     model = get_llm()
     try:
         if model is None:
             # Fall back to generate_insight which handles dummy LLMs if possible
-            resp = generate_insight(None, final_prompt)
+            resp = generate_insight(None, final_prompt, lang=lang)
         else:
-            resp = generate_insight(model, final_prompt)
+            resp = generate_insight(model, final_prompt, lang=lang)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     return jsonify({'response': resp})
@@ -260,11 +677,15 @@ def api_chat():
 def api_chat_stream():
     # Streamed chat endpoint: returns a text/plain streamed body with incremental chunks
     prompt = None
+    lang = 'en'
     if request.method == 'POST':
         data = request.get_json(silent=True) or {}
         prompt = data.get('prompt')
+        lang = data.get('lang', 'en')
     if not prompt:
         prompt = request.args.get('prompt', '')
+        lang = request.args.get('lang', 'en')
+    
     product = request.args.get('product', None)
     include_ctx = request.args.get('include_context', 'true').lower() != 'false'
     ctx = ''
@@ -273,9 +694,13 @@ def api_chat_stream():
             ctx = gather_dashboard_context(product or 'clothing')
         except Exception:
             ctx = ''
+    
     final_prompt = prompt
     if ctx:
-        final_prompt = f"{prompt}\n\nDashboard context:\n{ctx}\n\nPlease answer as a business advisor, referencing the dashboard values when relevant, and provide clear suggestions and next steps."
+        if lang == 'bn':
+            final_prompt = f"{prompt}\n\nড্যাশবোর্ড প্রসঙ্গ:\n{ctx}\n\nঅনুগ্রহ করে একজন ব্যবসা পরামর্শদাতা হিসেবে উত্তর দিন, প্রাসঙ্গিক হলে ড্যাশবোর্ডের মান উল্লেখ করুন এবং স্পষ্ট পরামর্শ ও পরবর্তী পদক্ষেপ প্রদান করুন। সব উত্তর বাংলায় দিন।"
+        else:
+            final_prompt = f"{prompt}\n\nDashboard context:\n{ctx}\n\nPlease answer as a business advisor, referencing the dashboard values when relevant, and provide clear suggestions and next steps."
 
     model = get_llm()
 

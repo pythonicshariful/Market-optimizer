@@ -1,114 +1,372 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AI E-Commerce Engine — Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
-  </head>
-  <body>
-    <nav class="navbar navbar-dark bg-dark shadow">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">AI E-Commerce Engine</a>
-        <div class="text-white opacity-75">One-click Insights • No setup</div>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>মার্কেট অপটিমাইজার - আপনার ব্যবসার সহায়ক</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
+</head>
+
+<body>
+  <!-- Help Bubble - Always visible -->
+  <div class="help-bubble" id="helpBubble">
+    <div class="help-icon">❓</div>
+    <div class="help-text">সাহায্য দরকার? এখানে ক্লিক করুন</div>
+  </div>
+
+  <!-- Tutorial Overlay (First time users) -->
+  <div class="tutorial-overlay" id="tutorialOverlay" style="display: none;">
+    <div class="tutorial-card">
+      <div class="tutorial-close" onclick="closeTutorial()">✕</div>
+      <h3>👋 স্বাগতম!</h3>
+      <p>এটি আপনার ব্যবসার জন্য AI-powered সহায়ক।</p>
+      <div class="tutorial-steps">
+        <div class="tutorial-step">
+          <div class="step-number">১</div>
+          <div class="step-text">নিচে থেকে একটি পণ্য নির্বাচন করুন</div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-number">২</div>
+          <div class="step-text">রঙিন বাটনে ক্লিক করে তথ্য দেখুন</div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-number">৩</div>
+          <div class="step-text">AI কপাইলটকে যেকোনো প্রশ্ন করুন</div>
+        </div>
       </div>
-    </nav>
+      <button class="btn btn-primary w-100 mt-3" onclick="closeTutorial()">শুরু করুন</button>
+    </div>
+  </div>
 
-    <main class="container py-4">
-      <header class="d-flex align-items-center mb-4">
-        <div class="me-3 logo animate__animated animate__fadeInLeft">📈</div>
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-dark bg-dark shadow">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <span class="logo-icon me-2">🏪</span>
+        <span data-i18n="app_title">মার্কেট অপটিমাইজার</span>
+      </a>
+      <div class="d-flex align-items-center gap-3">
+        <!-- Language Toggle -->
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="en" title="Switch to English">🇺🇸 EN</button>
+          <button class="lang-btn" data-lang="bn" title="বাংলা ভাষায় পরিবর্তন করুন">🇧🇩 বাংলা</button>
+        </div>
+        <!-- Theme Toggle -->
+        <div class="theme-toggle" id="themeToggle" title="ডার্ক মোড চালু/বন্ধ করুন"></div>
+        <!-- Help Button -->
+        <button class="btn btn-sm btn-outline-light" onclick="showTutorial()" title="সাহায্য দেখুন">
+          ❓ সাহায্য
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4 animate-fade-in">
+    <!-- Welcome Header -->
+    <header class="welcome-header mb-4 animate-slide-up">
+      <div class="d-flex align-items-center">
+        <div class="me-3 logo">📈</div>
         <div>
-          <h1 class="h3 mb-0">Smart Retail Dashboard</h1>
-          <p class="text-muted small">Push a button — get forecasts, optimized prices, recommendations and network insights.</p>
+          <h1 class="h3 mb-1 text-gradient" data-i18n="dashboard_title">আপনার ব্যবসার ড্যাশবোর্ড</h1>
+          <p class="text-muted small mb-0" data-i18n="dashboard_subtitle">
+            একটি বাটনে ক্লিক করুন → পূর্বাভাস, সঠিক দাম এবং বিক্রয় বৃদ্ধির পরামর্শ পান
+          </p>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <section class="mb-4">
-        <div class="row g-3">
-          <div class="col-md-3">
-            <input id="productInput" class="form-control" placeholder="Product (e.g., clothing)" value="clothing">
-          </div>
-            <div class="col-md-9 d-flex gap-2 flex-wrap">
-            <button id="btnForecast" class="btn btn-primary">Forecast Demand</button>
-            <button id="btnPrice" class="btn btn-success">Optimize Price</button>
-            <button id="btnRecommend" class="btn btn-info">Recommend Products</button>
-            <button id="btnGraph" class="btn btn-warning">Graph Insights</button>
-            <button id="btnSocial" class="btn btn-secondary">Social Buzz</button>
-            <input id="chatInputTop" class="form-control chat-input" placeholder="Ask the ROI Copilot...">
-            <button id="btnChatTop" class="btn btn-dark">Ask</button>
+    <!-- Product Selection Card -->
+    <section class="mb-4">
+      <div class="card product-selector-card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">
+            <span class="icon-text">🏷️</span>
+            <span data-i18n="select_product">পণ্য নির্বাচন করুন</span>
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="productSelect" class="form-label fw-bold">
+                আপনি কোন পণ্য সম্পর্কে জানতে চান?
+              </label>
+              <select id="productSelect" class="form-select form-select-lg">
+                <option value="">-- একটি পণ্য বেছে নিন --</option>
+                <option value="clothing">👕 কাপড়-চোপড় (Clothing)</option>
+                <option value="mobile">📱 মোবাইল ফোন (Mobile Phone)</option>
+                <option value="home_exercise">🏋️ হোম এক্সারসাইজ সরঞ্জাম (Home Exercise Equipment)</option>
+                <option value="exercise_accessories">🎽 ব্যায়াম আনুষাঙ্গিক (Exercise Accessories)</option>
+                <option value="electronics">💻 ইলেকট্রনিক্স (Electronics)</option>
+                <option value="food">🍽️ খাদ্য পণ্য (Food Items)</option>
+                <option value="cosmetics">💄 প্রসাধনী (Cosmetics)</option>
+                <option value="toys">🧸 খেলনা (Toys)</option>
+              </select>
+              <small class="text-muted d-block mt-2">
+                💡 <strong>পরামর্শ:</strong> প্রথমবার ব্যবহার করছেন? "মোবাইল ফোন" দিয়ে শুরু করুন!
+              </small>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">কি জানতে চান?</label>
+              <div class="action-grid">
+                <button class="action-card" id="btnForecast" title="পরবর্তী ৩০ দিনের বিক্রয় পূর্বাভাস">
+                  <div class="action-icon">📊</div>
+                  <div class="action-text" data-i18n="btn_forecast">চাহিদা পূর্বাভাস</div>
+                  <small class="action-hint">পরবর্তী মাসের বিক্রয়</small>
+                </button>
+
+                <button class="action-card" id="btnPrice" title="সঠিক দাম জানুন">
+                  <div class="action-icon">💰</div>
+                  <div class="action-text" data-i18n="btn_price">সঠিক দাম</div>
+                  <small class="action-hint">লাভজনক মূল্য</small>
+                </button>
+
+                <button class="action-card" id="btnRecommend" title="কোন পণ্য বেশি রাখবেন">
+                  <div class="action-icon">⭐</div>
+                  <div class="action-text" data-i18n="btn_recommend">সুপারিশ</div>
+                  <small class="action-hint">জনপ্রিয় পণ্য</small>
+                </button>
+
+                <button class="action-card" id="btnSocial" title="মানুষ কি বলছে">
+                  <div class="action-icon">😊</div>
+                  <div class="action-text" data-i18n="btn_social">জনমত</div>
+                  <small class="action-hint">কাস্টমারের মতামত</small>
+                </button>
+
+                <button class="action-card" id="btnStock" title="স্টক সতর্কতা">
+                  <div class="action-icon">📦</div>
+                  <div class="action-text">স্টক সতর্কতা</div>
+                  <small class="action-hint">মজুদ বিশ্লেষণ</small>
+                </button>
+
+                <button class="action-card" id="btnTrends" title="বিক্রয় প্রবণতা">
+                  <div class="action-icon">📈</div>
+                  <div class="action-text">বিক্রয় প্রবণতা</div>
+                  <small class="action-hint">সেরা বিক্রয় দিন</small>
+                </button>
+
+                <button class="action-card" id="btnCustomer" title="ক্রেতা বিশ্লেষণ">
+                  <div class="action-icon">👥</div>
+                  <div class="action-text">ক্রেতা বিশ্লেষণ</div>
+                  <small class="action-hint">সেরা ক্রেতা</small>
+                </button>
+
+                <button class="action-card" id="btnProfit" title="লাভ ক্যালকুলেটর">
+                  <div class="action-icon">💵</div>
+                  <div class="action-text">লাভ ক্যালকুলেটর</div>
+                  <small class="action-hint">মার্জিন বিশ্লেষণ</small>
+                </button>
+
+                <button class="action-card" id="btnSeasonal" title="মৌসুমী পূর্বাভাস">
+                  <div class="action-icon">🌟</div>
+                  <div class="action-text">মৌসুমী পূর্বাভাস</div>
+                  <small class="action-hint">ঈদ/রমজান</small>
+                </button>
+
+                <button class="action-card" id="btnMarketing" title="মার্কেটিং পরিকল্পনা">
+                  <div class="action-icon">🎯</div>
+                  <div class="action-text">মার্কেটিং পরিকল্পনা</div>
+                  <small class="action-hint">ক্যাম্পেইন কৌশল</small>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="results" class="mb-5">
-        <div class="row">
-          <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-              <div class="card-header">Forecast (next 30 days)</div>
-              <div class="card-body">
-                <canvas id="forecastChart" height="220"></canvas>
-                <div id="forecastRaw" class="mt-2 small text-monospace"></div>
+    <!-- Results Section -->
+    <section id="results" class="mb-5">
+      <div class="row">
+        <!-- Forecast Card -->
+        <div class="col-lg-6 mb-4">
+          <div class="card result-card animate-slide-up">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>
+                <span class="header-icon">📈</span>
+                <span data-i18n="card_forecast">পূর্বাভাস (পরবর্তী ৩০ দিন)</span>
+              </span>
+              <span class="badge bg-info" id="forecastBadge" style="display: none;">নতুন</span>
+            </div>
+            <div class="card-body">
+              <div class="empty-state" id="forecastEmpty">
+                <div class="empty-icon">📊</div>
+                <p class="text-muted mb-0">উপরে একটি পণ্য নির্বাচন করুন এবং "চাহিদা পূর্বাভাস" বাটনে ক্লিক করুন</p>
+              </div>
+              <canvas id="forecastChart" height="220" style="display: none;"></canvas>
+              <div id="forecastSummary" class="mt-3 alert alert-info" style="display: none;">
+                <strong>সারসংক্ষেপ:</strong> <span id="forecastText"></span>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-              <div class="card-header">Price Optimization</div>
-              <div class="card-body">
-                <div id="priceResult" class="h5"></div>
-                <div id="priceExplanation" class="mt-2 small text-muted"></div>
-              </div>
+        <!-- Price & Recommendations Column -->
+        <div class="col-lg-6 mb-4">
+          <!-- Price Optimization Card -->
+          <div class="card result-card animate-slide-up mb-3">
+            <div class="card-header">
+              <span class="header-icon">💰</span>
+              <span data-i18n="card_price">মূল্য নির্ধারণ</span>
             </div>
-            <div class="card shadow-sm mt-3">
-              <div class="card-header">Recommendations</div>
-              <div class="card-body">
-                <ul id="recommendations" class="list-group list-group-flush"></ul>
+            <div class="card-body">
+              <div class="empty-state" id="priceEmpty">
+                <div class="empty-icon">💰</div>
+                <p class="text-muted mb-0">"সঠিক দাম" বাটনে ক্লিক করুন</p>
               </div>
-            </div>
-            <div class="card shadow-sm mt-3">
-              <div class="card-header">ROI Copilot</div>
-              <div class="card-body">
-                <div id="chatLog" class="small" style="max-height:320px; overflow:auto; padding:8px 4px;"></div>
-                <div class="mt-3 d-flex gap-2">
-                  <input id="chatInput" class="form-control" placeholder="Ask a question (e.g., Optimize price?)">
-                  <button id="btnChat" class="btn btn-dark">Ask</button>
+              <div id="priceResult" style="display: none;">
+                <div class="price-comparison">
+                  <div class="price-item">
+                    <small class="text-muted">বর্তমান দাম</small>
+                    <div class="price-value" id="currentPrice">০</div>
+                  </div>
+                  <div class="price-arrow">→</div>
+                  <div class="price-item recommended">
+                    <small class="text-success">সুপারিশকৃত দাম</small>
+                    <div class="price-value text-success" id="optimizedPrice">০</div>
+                  </div>
+                </div>
+                <div class="mt-3 alert alert-success" id="priceAdvice">
+                  <strong>💡 পরামর্শ:</strong> <span id="priceText"></span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-              <div class="card-header">Graph</div>
-              <div class="card-body" style="height:360px;">
-                <div id="network" style="width:100%; height:320px;"></div>
+          <!-- Recommendations Card -->
+          <div class="card result-card animate-slide-up">
+            <div class="card-header">
+              <span class="header-icon">⭐</span>
+              <span data-i18n="card_recommendations">জনপ্রিয় পণ্য</span>
+            </div>
+            <div class="card-body">
+              <div class="empty-state" id="recommendEmpty">
+                <div class="empty-icon">⭐</div>
+                <p class="text-muted mb-0">"সুপারিশ" বাটনে ক্লিক করুন</p>
+              </div>
+              <div id="recommendationsList" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Copilot Row - Enhanced Design -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card ai-chat-card animate-slide-up">
+            <div class="ai-chat-header">
+              <div class="ai-chat-title-wrapper">
+                <div class="ai-icon-wrapper">
+                  <span class="ai-icon">🤖</span>
+                  <span class="ai-pulse"></span>
+                </div>
+                <div>
+                  <h3 class="ai-chat-title mb-1" data-i18n="card_chat">AI ব্যবসায়িক পরামর্শদাতা</h3>
+                  <p class="ai-chat-subtitle mb-0">আপনার ব্যবসার জন্য স্মার্ট পরামর্শ • Smart Advice for Your Business
+                  </p>
+                </div>
+              </div>
+              <span class="badge badge-live">
+                <span class="live-dot"></span>
+                লাইভ • Live
+              </span>
+            </div>
+            <div class="card-body">
+              <div class="ai-features-grid mb-4">
+                <div class="ai-feature">
+                  <div class="feature-icon">💬</div>
+                  <div class="feature-text">বাংলায় প্রশ্ন করুন</div>
+                </div>
+                <div class="ai-feature">
+                  <div class="feature-icon">⚡</div>
+                  <div class="feature-text">তাৎক্ষণিক উত্তর</div>
+                </div>
+                <div class="ai-feature">
+                  <div class="feature-icon">💡</div>
+                  <div class="feature-text">ব্যবসায়িক পরামর্শ</div>
+                </div>
+              </div>
+
+              <div class="example-questions-enhanced mb-4">
+                <p class="example-title">💭 এই প্রশ্ন করে দেখুন:</p>
+                <div class="d-flex gap-2 flex-wrap">
+                  <button class="example-q-btn-enhanced" onclick="askExample('আমার দোকানে কোন পণ্য বেশি রাখব?')">
+                    <span class="q-icon">🏪</span> আমার দোকানে কোন পণ্য বেশি রাখব?
+                  </button>
+                  <button class="example-q-btn-enhanced" onclick="askExample('কিভাবে বিক্রয় বাড়াব?')">
+                    <span class="q-icon">📈</span> কিভাবে বিক্রয় বাড়াব?
+                  </button>
+                  <button class="example-q-btn-enhanced" onclick="askExample('এই মাসে কোন পণ্যের চাহিদা বেশি?')">
+                    <span class="q-icon">🎯</span> এই মাসে কোন পণ্যের চাহিদা বেশি?
+                  </button>
+                </div>
+              </div>
+
+              <div id="chatLog" class="chat-container-enhanced mb-3"></div>
+
+              <div class="chat-input-wrapper">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text">
+                    <span class="chat-input-icon">💭</span>
+                  </span>
+                  <input type="text" id="chatInput" class="form-control form-control-lg chat-input-enhanced"
+                    placeholder="এখানে আপনার প্রশ্ন লিখুন... (যেমন: আমার দোকানের জন্য পরামর্শ দিন)"
+                    data-i18n-placeholder="chat_placeholder">
+                  <button class="btn btn-primary btn-lg chat-send-btn" id="btnChat" data-i18n="btn_ask">
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">জিজ্ঞাসা করুন</span>
+                  </button>
+                </div>
+                <small class="chat-hint">
+                  <span class="hint-icon">ℹ️</span>
+                  বাংলা বা ইংরেজিতে যেকোনো প্রশ্ন করুন • Ask anything in Bangla or English
+                </small>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-              <div class="card-header">Social Sentiment</div>
+      <!-- Social Sentiment (Optional - Collapsible) -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card result-card">
+            <div class="card-header clickable" data-bs-toggle="collapse" data-bs-target="#socialSection">
+              <span class="header-icon">📱</span>
+              <span data-i18n="card_social">সোশ্যাল মিডিয়া জনমত</span>
+              <span class="float-end">▼</span>
+            </div>
+            <div class="collapse" id="socialSection">
               <div class="card-body">
-                <canvas id="socialChart" height="200"></canvas>
+                <div class="empty-state" id="socialEmpty">
+                  <div class="empty-icon">😊</div>
+                  <p class="text-muted mb-0">"জনমত" বাটনে ক্লিক করুন</p>
+                </div>
+                <canvas id="socialChart" height="200" style="display: none;"></canvas>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <footer class="text-muted small text-center py-3">Built for demos — connected to the local Flask API</footer>
-    </main>
+    <footer class="text-center py-4">
+      <p class="text-muted small mb-1" data-i18n="footer_text">
+        আপনার ব্যবসার সফলতার জন্য তৈরি
+      </p>
+      <p class="text-muted small mb-0">
+        Made with ❤️ in Bangladesh 🇧🇩 •
+        <span class="text-gradient">AI-First Commerce</span>
+      </p>
+    </footer>
+  </main>
 
-    <script src="/static/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+  <script src="/static/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
